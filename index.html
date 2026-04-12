@@ -48,9 +48,9 @@
     --shape-full:9999px;
 
     /* Animation easings */
-    --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
     --ease-out:     cubic-bezier(0.25, 1, 0.5, 1);
     --ease-spring:  cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -82,25 +82,19 @@
 
   /* ── Animations ── */
   @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes panelIn {
-    from { opacity: 0; transform: translateY(8px) scale(0.99); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes tilePop {
     0%   { transform: scale(1); }
-    45%  { transform: scale(1.05); }
+    50%  { transform: scale(1.018); }
     100% { transform: scale(1); }
-  }
-
-  @keyframes valueFlash {
-    0%   { opacity: 1; }
-    35%  { opacity: 0.3; }
-    100% { opacity: 1; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -132,7 +126,7 @@
   .app-header {
     padding: 0 4px;
     margin-bottom: 20px;
-    animation: fadeSlideUp 0.55s var(--ease-spring) both;
+    animation: fadeSlideUp 0.4s var(--ease-spring) both;
   }
 
   .header-eyebrow {
@@ -163,7 +157,7 @@
       0 1px 2px rgba(0,0,0,.10),
       0 2px 6px rgba(0,0,0,.06);
     overflow: hidden;
-    animation: fadeSlideUp 0.6s var(--ease-spring) 0.08s both;
+    animation: fadeSlideUp 0.45s var(--ease-spring) 0.06s both;
   }
 
   /* ── M3 Tab bar ── */
@@ -183,14 +177,12 @@
     border: none;
     background: transparent;
     color: var(--md-on-surface-variant);
-    transition: color .22s var(--ease-out), background .22s var(--ease-out), transform .15s var(--ease-bounce);
+    transition: color .2s var(--ease-standard), background .2s var(--ease-standard);
     position: relative;
     display: flex;
     align-items: center;
     gap: 7px;
   }
-
-  .tab:active { transform: scale(0.97); }
 
   .tab-icon { font-size: 15px; }
 
@@ -202,7 +194,7 @@
     border-radius: 3px 3px 0 0;
     background: var(--md-primary);
     transform: scaleX(0);
-    transition: transform 0.3s var(--ease-bounce);
+    transition: transform 0.25s var(--ease-spring);
   }
 
   .tab.active {
@@ -217,7 +209,7 @@
   .panel { display: none; padding: 20px 20px 24px; }
   .panel.active {
     display: block;
-    animation: panelIn 0.32s var(--ease-bounce) both;
+    animation: panelIn 0.22s var(--ease-out) both;
   }
 
   /* ── Section headers ── */
@@ -279,14 +271,13 @@
     font-family: var(--mono);
     appearance: none;
     -webkit-appearance: none;
-    transition: border-color .18s var(--ease-out), box-shadow .18s var(--ease-out), transform .2s var(--ease-bounce);
+    transition: border-color .18s var(--ease-standard), box-shadow .18s var(--ease-standard);
   }
 
   input:focus, select:focus {
     outline: none;
     border-color: var(--md-primary);
     border-width: 2px;
-    transform: scale(1.015);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 12%, transparent);
   }
 
@@ -304,6 +295,110 @@
   select option {
     background: var(--md-surface-container-highest);
     color: var(--md-on-surface);
+  }
+
+  /* ── Custom TDS dropdown ── */
+  .custom-select {
+    position: relative;
+  }
+
+  .custom-select-trigger {
+    width: 100%;
+    padding: 10px 36px 10px 12px;
+    border: 1px solid var(--md-outline);
+    border-radius: var(--shape-xs);
+    background: var(--md-surface-container-lowest);
+    color: var(--md-on-surface);
+    font-size: 13px;
+    font-family: var(--font);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color .18s var(--ease-standard), box-shadow .18s var(--ease-standard);
+    user-select: none;
+    text-align: left;
+  }
+
+  .custom-select-trigger::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2373777F' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    transition: transform .2s var(--ease-standard);
+  }
+
+  .custom-select.open .custom-select-trigger {
+    border-color: var(--md-primary);
+    border-width: 2px;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 12%, transparent);
+  }
+
+  .custom-select.open .custom-select-trigger::after {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .custom-select-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--md-surface-container-lowest);
+    border: 1px solid var(--md-outline-variant);
+    border-radius: var(--shape-sm);
+    box-shadow: 0 4px 16px rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.08);
+    z-index: 100;
+    overflow: hidden;
+    display: none;
+    animation: menuIn 0.18s var(--ease-spring) both;
+  }
+
+  @keyframes menuIn {
+    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .custom-select.open .custom-select-menu {
+    display: block;
+  }
+
+  .custom-select-option {
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: var(--font);
+    color: var(--md-on-surface);
+    cursor: pointer;
+    transition: background .12s var(--ease-standard);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .custom-select-option:hover {
+    background: var(--md-surface-container);
+  }
+
+  .custom-select-option.selected {
+    background: var(--md-primary-container);
+    color: var(--md-on-primary-container);
+    font-weight: 600;
+  }
+
+  .custom-select-option .opt-pct {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--md-on-surface-variant);
+    opacity: .7;
+  }
+
+  .custom-select-option.selected .opt-pct {
+    color: var(--md-on-primary-container);
+    opacity: .6;
   }
 
   input[type=number]::-webkit-inner-spin-button { opacity: .35; }
@@ -343,17 +438,17 @@
     background: var(--md-surface-container);
     border-radius: var(--shape-md);
     padding: 12px 13px;
-    transition: transform 0.22s var(--ease-bounce), box-shadow 0.2s var(--ease-out);
+    transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
     cursor: default;
   }
 
   .result-tile:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 4px 14px rgba(0,0,0,.10);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,.08);
   }
 
   .result-tile.pop {
-    animation: tilePop 0.4s var(--ease-bounce);
+    animation: tilePop 0.3s var(--ease-out);
   }
 
   .result-tile.accent {
@@ -493,14 +588,18 @@
           </div>
           <div class="field">
             <label>TDS category</label>
-            <select id="f-tds-cat" onchange="toggleFwdCustom();calcFwd()">
-              <option value="1.5" selected>Goods (1.5%)</option>
-              <option value="5">Services (5%)</option>
-              <option value="10">Rent (10%)</option>
-              <option value="15">Commission (15%)</option>
-              <option value="25">Dividend (25%)</option>
-              <option value="custom">Custom</option>
-            </select>
+            <div class="custom-select" id="f-tds-select">
+              <div class="custom-select-trigger" onclick="toggleDropdown('f-tds-select')">Goods (1.5%)</div>
+              <div class="custom-select-menu">
+                <div class="custom-select-option selected" data-value="1.5" onclick="selectOption('f-tds-select','1.5','Goods (1.5%)')"><span>Goods</span><span class="opt-pct">1.5%</span></div>
+                <div class="custom-select-option" data-value="5"    onclick="selectOption('f-tds-select','5','Services (5%)')"><span>Services</span><span class="opt-pct">5%</span></div>
+                <div class="custom-select-option" data-value="10"   onclick="selectOption('f-tds-select','10','Rent (10%)')"><span>Rent</span><span class="opt-pct">10%</span></div>
+                <div class="custom-select-option" data-value="15"   onclick="selectOption('f-tds-select','15','Commission (15%)')"><span>Commission</span><span class="opt-pct">15%</span></div>
+                <div class="custom-select-option" data-value="25"   onclick="selectOption('f-tds-select','25','Dividend (25%)')"><span>Dividend</span><span class="opt-pct">25%</span></div>
+                <div class="custom-select-option" data-value="custom" onclick="selectOption('f-tds-select','custom','Custom')"><span>Custom</span><span class="opt-pct">—</span></div>
+              </div>
+            </div>
+            <input type="hidden" id="f-tds-cat" value="1.5">
           </div>
         </div>
         <div id="f-custom-wrap" style="display:none; margin-top:10px; max-width:160px">
@@ -586,14 +685,18 @@
           </div>
           <div class="field">
             <label>TDS category</label>
-            <select id="r-tds-cat" onchange="toggleRevCustom();calcRev()">
-              <option value="1.5" selected>Goods (1.5%)</option>
-              <option value="5">Services (5%)</option>
-              <option value="10">Rent (10%)</option>
-              <option value="15">Commission (15%)</option>
-              <option value="25">Dividend (25%)</option>
-              <option value="custom">Custom</option>
-            </select>
+            <div class="custom-select" id="r-tds-select">
+              <div class="custom-select-trigger" onclick="toggleDropdown('r-tds-select')">Goods (1.5%)</div>
+              <div class="custom-select-menu">
+                <div class="custom-select-option selected" data-value="1.5" onclick="selectOption('r-tds-select','1.5','Goods (1.5%)')"><span>Goods</span><span class="opt-pct">1.5%</span></div>
+                <div class="custom-select-option" data-value="5"    onclick="selectOption('r-tds-select','5','Services (5%)')"><span>Services</span><span class="opt-pct">5%</span></div>
+                <div class="custom-select-option" data-value="10"   onclick="selectOption('r-tds-select','10','Rent (10%)')"><span>Rent</span><span class="opt-pct">10%</span></div>
+                <div class="custom-select-option" data-value="15"   onclick="selectOption('r-tds-select','15','Commission (15%)')"><span>Commission</span><span class="opt-pct">15%</span></div>
+                <div class="custom-select-option" data-value="25"   onclick="selectOption('r-tds-select','25','Dividend (25%)')"><span>Dividend</span><span class="opt-pct">25%</span></div>
+                <div class="custom-select-option" data-value="custom" onclick="selectOption('r-tds-select','custom','Custom')"><span>Custom</span><span class="opt-pct">—</span></div>
+              </div>
+            </div>
+            <input type="hidden" id="r-tds-cat" value="1.5">
           </div>
         </div>
         <div id="r-custom-wrap" style="display:none; margin-top:10px; max-width:160px">
@@ -686,9 +789,40 @@ function switchTab(t) {
   document.getElementById('panel-' + t).classList.add('active');
 }
 
-function getTDS(catId, customId) {
+function toggleDropdown(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  // close all
+  document.querySelectorAll('.custom-select.open').forEach(d => d.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function selectOption(selectId, value, label) {
+  const el = document.getElementById(selectId);
+  el.querySelector('.custom-select-trigger').textContent = label;
+  el.querySelectorAll('.custom-select-option').forEach(o => o.classList.toggle('selected', o.dataset.value === value));
+  el.classList.remove('open');
+  const hidden = document.getElementById(selectId.replace('-select', '-cat'));
+  hidden.value = value;
+  // trigger recalc + custom wrap toggle
+  if (selectId === 'f-tds-select') { toggleFwdCustom(); calcFwd(); }
+  else { toggleRevCustom(); calcRev(); }
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.custom-select')) {
+    document.querySelectorAll('.custom-select.open').forEach(d => d.classList.remove('open'));
+  }
+});
+
+function getTDS(catId) {
   const v = document.getElementById(catId).value;
-  return v === 'custom' ? (parseFloat(document.getElementById(customId).value) || 0) : parseFloat(v);
+  if (v === 'custom') {
+    const customId = catId === 'f-tds-cat' ? 'f-tds-custom' : 'r-tds-custom';
+    return parseFloat(document.getElementById(customId).value) || 0;
+  }
+  return parseFloat(v);
 }
 
 function toggleFwdCustom() {
@@ -703,7 +837,7 @@ function toggleRevCustom() {
 function calcFwd() {
   const credits = parseFloat(document.getElementById('f-credits').value) || 0;
   const rate    = parseFloat(document.getElementById('f-rate').value) || 0;
-  const tr      = getTDS('f-tds-cat', 'f-tds-custom');
+  const tr      = getTDS('f-tds-cat');
 
   const base     = credits * rate;
   const vat      = base * VAT;
@@ -731,7 +865,7 @@ function calcFwd() {
 function calcRev() {
   const paid = parseFloat(document.getElementById('r-paid').value) || 0;
   const rate = parseFloat(document.getElementById('r-rate').value) || 0;
-  const tr   = getTDS('r-tds-cat', 'r-tds-custom');
+  const tr   = getTDS('r-tds-cat');
 
   // paid = base * 1.13 - base * (tr/100)
   // paid = base * (1.13 - tr/100)
@@ -765,4 +899,3 @@ function calcRev() {
 </script>
 </body>
 </html>
-
