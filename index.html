@@ -39,13 +39,18 @@
     --font: 'Cambria', 'Georgia', serif;
     --mono: 'Noto Sans Mono', 'Consolas', monospace;
 
-    /* M3 shape */
-    --shape-xs:  4px;
-    --shape-sm:  8px;
-    --shape-md:  12px;
-    --shape-lg:  16px;
-    --shape-xl:  28px;
+    /* M3 shape — extra curvy */
+    --shape-xs:  8px;
+    --shape-sm:  12px;
+    --shape-md:  16px;
+    --shape-lg:  20px;
+    --shape-xl:  32px;
     --shape-full:9999px;
+
+    /* Animation easings */
+    --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out:     cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-spring:  cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -75,26 +80,59 @@
     }
   }
 
+  /* ── Animations ── */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.99); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes tilePop {
+    0%   { transform: scale(1); }
+    45%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes valueFlash {
+    0%   { opacity: 1; }
+    35%  { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   body {
     font-family: var(--font);
     background: var(--md-surface-container-low);
     color: var(--md-on-surface);
     min-height: 100vh;
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 24px 16px 48px;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 0;
   }
 
   .app {
     width: 100%;
     max-width: 548px;
+    flex: 1;
   }
 
   /* ── Header ── */
   .app-header {
     padding: 0 4px;
     margin-bottom: 20px;
+    animation: fadeSlideUp 0.55s var(--ease-spring) both;
   }
 
   .header-eyebrow {
@@ -125,6 +163,7 @@
       0 1px 2px rgba(0,0,0,.10),
       0 2px 6px rgba(0,0,0,.06);
     overflow: hidden;
+    animation: fadeSlideUp 0.6s var(--ease-spring) 0.08s both;
   }
 
   /* ── M3 Tab bar ── */
@@ -144,12 +183,14 @@
     border: none;
     background: transparent;
     color: var(--md-on-surface-variant);
-    transition: color .2s, background .2s;
+    transition: color .22s var(--ease-out), background .22s var(--ease-out), transform .15s var(--ease-bounce);
     position: relative;
     display: flex;
     align-items: center;
     gap: 7px;
   }
+
+  .tab:active { transform: scale(0.97); }
 
   .tab-icon { font-size: 15px; }
 
@@ -161,7 +202,7 @@
     border-radius: 3px 3px 0 0;
     background: var(--md-primary);
     transform: scaleX(0);
-    transition: transform .2s;
+    transition: transform 0.3s var(--ease-bounce);
   }
 
   .tab.active {
@@ -174,7 +215,10 @@
 
   /* ── Panels ── */
   .panel { display: none; padding: 20px 20px 24px; }
-  .panel.active { display: block; }
+  .panel.active {
+    display: block;
+    animation: panelIn 0.32s var(--ease-bounce) both;
+  }
 
   /* ── Section headers ── */
   .section { margin-bottom: 16px; }
@@ -229,13 +273,21 @@
     padding: 10px 12px;
     border: 1px solid var(--md-outline);
     border-radius: var(--shape-xs);
-    background: transparent;
+    background: var(--md-surface-container-lowest);
     color: var(--md-on-surface);
     font-size: 14px;
     font-family: var(--mono);
     appearance: none;
     -webkit-appearance: none;
-    transition: border-color .15s, box-shadow .15s;
+    transition: border-color .18s var(--ease-out), box-shadow .18s var(--ease-out), transform .2s var(--ease-bounce);
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    border-width: 2px;
+    transform: scale(1.015);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 12%, transparent);
   }
 
   input.has-prefix { padding-left: 36px; }
@@ -249,11 +301,9 @@
     padding-right: 32px;
   }
 
-  input:focus, select:focus {
-    outline: none;
-    border-color: var(--md-primary);
-    border-width: 2px;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 12%, transparent);
+  select option {
+    background: var(--md-surface-container-highest);
+    color: var(--md-on-surface);
   }
 
   input[type=number]::-webkit-inner-spin-button { opacity: .35; }
@@ -268,8 +318,8 @@
     color: var(--md-on-secondary-container);
     background: var(--md-secondary-container);
     border: 1px solid var(--md-outline-variant);
-    border-radius: var(--shape-sm);
-    padding: 6px 10px;
+    border-radius: var(--shape-full);
+    padding: 6px 12px;
     font-weight: 600;
     line-height: 1;
   }
@@ -293,6 +343,17 @@
     background: var(--md-surface-container);
     border-radius: var(--shape-md);
     padding: 12px 13px;
+    transition: transform 0.22s var(--ease-bounce), box-shadow 0.2s var(--ease-out);
+    cursor: default;
+  }
+
+  .result-tile:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 14px rgba(0,0,0,.10);
+  }
+
+  .result-tile.pop {
+    animation: tilePop 0.4s var(--ease-bounce);
   }
 
   .result-tile.accent {
@@ -399,12 +460,8 @@
   <div class="m3-card">
 
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('fwd')">
-        <span class="tab-icon"></span> Credits → Amount
-      </button>
-      <button class="tab" onclick="switchTab('rev')">
-        <span class="tab-icon"></span> Amount → Credits
-      </button>
+      <button class="tab active" onclick="switchTab('fwd')">Credits → Amount</button>
+      <button class="tab" onclick="switchTab('rev')">Amount → Credits</button>
     </div>
 
     <!-- ── FORWARD: Credits → How much client pays ── -->
@@ -507,7 +564,7 @@
             <label>Amount paid by client (after TDS)</label>
             <div class="input-wrap">
               <span class="input-prefix">NPR</span>
-              <input type="number" id="r-paid" class="has-prefix" placeholder="e.g. Rs. 47387" min="0" oninput="calcRev()">
+              <input type="number" id="r-paid" class="has-prefix" placeholder="e.g. 47387" min="0" oninput="calcRev()">
             </div>
           </div>
           <div class="field">
@@ -596,12 +653,32 @@
 
 </div><!-- .app -->
 
+<footer style="width:100%;text-align:center;padding:1.25rem 0.75rem;font-size:0.65rem;color:var(--md-on-surface-variant);letter-spacing:0.05em;margin-top:20px;">Copyright © 2026 <a href="https://github.com/qwertyonheist" target="_blank" style="color:var(--md-primary);text-decoration:underline;">qwertyonheist</a></footer>
+
 <script>
 const VAT = 0.13;
 
 const fmt = n => 'NPR\u00a0' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
 const fmtC = n => n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
 const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+
+function popTile(valueEl) {
+  const tile = valueEl && valueEl.closest('.result-tile');
+  if (!tile) return;
+  tile.classList.remove('pop');
+  void tile.offsetWidth; // reflow to restart animation
+  tile.classList.add('pop');
+  tile.addEventListener('animationend', () => tile.classList.remove('pop'), { once: true });
+}
+
+function setAndPop(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.textContent !== val) {
+    el.textContent = val;
+    popTile(el);
+  }
+}
 
 function switchTab(t) {
   document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', ['fwd','rev'][i] === t));
@@ -635,12 +712,12 @@ function calcFwd() {
   const net      = incl - tds;
   const rateIncl = rate * (1 + VAT);
 
-  set('f-r-base',      fmt(base));
-  set('f-r-vat',       fmt(vat));
-  set('f-r-incl',      fmt(incl));
-  set('f-r-tds',       fmt(tds));
-  set('f-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
-  set('f-r-net',       fmt(net));
+  setAndPop('f-r-base',      fmt(base));
+  setAndPop('f-r-vat',       fmt(vat));
+  setAndPop('f-r-incl',      fmt(incl));
+  setAndPop('f-r-tds',       fmt(tds));
+  setAndPop('f-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
+  setAndPop('f-r-net',       fmt(net));
 
   set('f-b-expr', credits.toLocaleString('en-IN') + ' × NPR\u00a0' + rate.toFixed(2));
   set('f-b-base', fmt(base));
@@ -668,12 +745,12 @@ function calcRev() {
   const credits  = rate > 0 ? base / rate : 0;
   const rateIncl = rate * (1 + VAT);
 
-  set('r-r-base',      fmt(base));
-  set('r-r-vat',       fmt(vat));
-  set('r-r-incl',      fmt(incl));
-  set('r-r-tds',       fmt(tds));
-  set('r-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
-  set('r-r-credits',   fmtC(credits));
+  setAndPop('r-r-base',      fmt(base));
+  setAndPop('r-r-vat',       fmt(vat));
+  setAndPop('r-r-incl',      fmt(incl));
+  setAndPop('r-r-tds',       fmt(tds));
+  setAndPop('r-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
+  setAndPop('r-r-credits',   fmtC(credits));
 
   set('r-b-paid',    fmt(paid));
   set('r-b-base',    fmt(base));
@@ -687,5 +764,5 @@ function calcRev() {
 }
 </script>
 </body>
-<footer style="text-align:center;padding:0.75rem;font-size:0.65rem;color:var(--text-disabled);letter-spacing:0.05em;">Copyright © 2026 <a href="https://github.com/qwertyonheist" target="_blank" style="color:var(--text-secondary);text-decoration:underline;">qwertyonheist</a></footer>
 </html>
+
