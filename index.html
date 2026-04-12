@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMS · VAT · TDS Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Material Design 3 · Light scheme ── */
+  :root {
+    /* M3 color roles */
+    --md-primary:           #0057A3;
+    --md-on-primary:        #FFFFFF;
+    --md-primary-container: #D6E4FF;
+    --md-on-primary-container: #001C3E;
+    --md-secondary:         #545F71;
+    --md-on-secondary:      #FFFFFF;
+    --md-secondary-container: #D8E3F8;
+    --md-on-secondary-container: #111C2B;
+    --md-error:             #BA1A1A;
+    --md-error-container:   #FFDAD6;
+    --md-on-error-container:#410002;
+    --md-surface:           #F8F9FF;
+    --md-surface-variant:   #DFE2EB;
+    --md-on-surface:        #191C20;
+    --md-on-surface-variant:#43474E;
+    --md-outline:           #73777F;
+    --md-outline-variant:   #C3C6CF;
+    --md-surface-container-lowest:  #FFFFFF;
+    --md-surface-container-low:     #F2F3FA;
+    --md-surface-container:         #ECEFF5;
+    --md-surface-container-high:    #E6E8EF;
+    --md-surface-container-highest: #E0E2E9;
+
+    /* Typography — Cambria everywhere */
+    --font: 'Cambria', 'Georgia', serif;
+    --mono: 'Noto Sans Mono', 'Consolas', monospace;
+
+    /* M3 shape */
+    --shape-xs:  4px;
+    --shape-sm:  8px;
+    --shape-md:  12px;
+    --shape-lg:  16px;
+    --shape-xl:  28px;
+    --shape-full:9999px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --md-primary:           #AAC7FF;
+      --md-on-primary:        #002F65;
+      --md-primary-container: #00438F;
+      --md-on-primary-container: #D6E4FF;
+      --md-secondary:         #BBC7DB;
+      --md-on-secondary:      #263141;
+      --md-secondary-container:#3C4758;
+      --md-on-secondary-container:#D8E3F8;
+      --md-error:             #FFB4AB;
+      --md-error-container:   #93000A;
+      --md-on-error-container:#FFDAD6;
+      --md-surface:           #111318;
+      --md-surface-variant:   #43474E;
+      --md-on-surface:        #E2E2E9;
+      --md-on-surface-variant:#C3C6CF;
+      --md-outline:           #8D9199;
+      --md-outline-variant:   #43474E;
+      --md-surface-container-lowest:  #0C0E13;
+      --md-surface-container-low:     #191C20;
+      --md-surface-container:         #1D2024;
+      --md-surface-container-high:    #272A2F;
+      --md-surface-container-highest: #323539;
+    }
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--md-surface-container-low);
+    color: var(--md-on-surface);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px 48px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 548px;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    padding: 0 4px;
+    margin-bottom: 20px;
+  }
+
+  .header-eyebrow {
+    font-family: var(--font);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--md-primary);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .app-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--md-on-surface);
+    letter-spacing: -.01em;
+  }
+
+  .app-header h1 .dot { color: var(--md-primary); }
+
+  /* ── M3 Surface card ── */
+  .m3-card {
+    background: var(--md-surface-container-lowest);
+    border-radius: var(--shape-xl);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.10),
+      0 2px 6px rgba(0,0,0,.06);
+    overflow: hidden;
+  }
+
+  /* ── M3 Tab bar ── */
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--md-outline-variant);
+    background: var(--md-surface-container-low);
+  }
+
+  .tab {
+    padding: 14px 16px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--md-on-surface-variant);
+    transition: color .2s, background .2s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .tab-icon { font-size: 15px; }
+
+  .tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: var(--md-primary);
+    transform: scaleX(0);
+    transition: transform .2s;
+  }
+
+  .tab.active {
+    color: var(--md-primary);
+    background: var(--md-surface-container-lowest);
+  }
+
+  .tab.active::after { transform: scaleX(1); }
+  .tab:first-child { border-right: 1px solid var(--md-outline-variant); }
+
+  /* ── Panels ── */
+  .panel { display: none; padding: 20px 20px 24px; }
+  .panel.active { display: block; }
+
+  /* ── Section headers ── */
+  .section { margin-bottom: 16px; }
+
+  .section-label {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--md-primary);
+    margin-bottom: 10px;
+  }
+
+  /* ── Grid layouts ── */
+  .row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  @media (max-width: 400px) {
+    .row, .row3 { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── M3 Outlined Text Field ── */
+  .field { display: flex; flex-direction: column; gap: 4px; }
+
+  .field label {
+    font-family: var(--font);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--md-on-surface-variant);
+    letter-spacing: .01em;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-prefix {
+    position: absolute;
+    left: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--md-outline);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--md-outline);
+    border-radius: var(--shape-xs);
+    background: transparent;
+    color: var(--md-on-surface);
+    font-size: 14px;
+    font-family: var(--mono);
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+
+  input.has-prefix { padding-left: 36px; }
+
+  select {
+    font-family: var(--font);
+    font-size: 13px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2373777F' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    border-width: 2px;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 12%, transparent);
+  }
+
+  input[type=number]::-webkit-inner-spin-button { opacity: .35; }
+
+  /* ── Fixed VAT badge — M3 Assist chip style ── */
+  .fixed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font);
+    font-size: 12px;
+    color: var(--md-on-secondary-container);
+    background: var(--md-secondary-container);
+    border: 1px solid var(--md-outline-variant);
+    border-radius: var(--shape-sm);
+    padding: 6px 10px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--md-outline-variant);
+    margin: 16px 0;
+  }
+
+  /* ── M3 Result tiles — tonal surface ── */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .result-tile {
+    background: var(--md-surface-container);
+    border-radius: var(--shape-md);
+    padding: 12px 13px;
+  }
+
+  .result-tile.accent {
+    background: var(--md-primary-container);
+  }
+
+  .result-tile-label {
+    font-family: var(--font);
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--md-on-surface-variant);
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: .01em;
+  }
+
+  .result-tile.accent .result-tile-label {
+    color: var(--md-on-primary-container);
+    opacity: .75;
+  }
+
+  .result-tile-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--md-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .result-tile.accent .result-tile-value {
+    color: var(--md-on-primary-container);
+    font-weight: 700;
+  }
+
+  /* ── Breakdown table ── */
+  .breakdown {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .breakdown tr td {
+    padding: 5px 0;
+    font-size: 13px;
+    font-family: var(--font);
+  }
+
+  .breakdown tr td:first-child {
+    color: var(--md-on-surface-variant);
+  }
+
+  .breakdown tr td:last-child {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--md-on-surface);
+  }
+
+  .breakdown tr.deduction td:last-child {
+    color: var(--md-error);
+  }
+
+  .breakdown tr.total td {
+    padding-top: 11px;
+    border-top: 1px solid var(--md-outline-variant);
+    font-size: 14.5px;
+    font-weight: 700;
+  }
+
+  .breakdown tr.total td:last-child {
+    font-family: var(--mono);
+    font-size: 14.5px;
+    color: var(--md-primary);
+    font-weight: 700;
+  }
+
+  /* ── M3 info banner ── */
+  .info-note {
+    font-family: var(--font);
+    font-size: 12px;
+    color: var(--md-on-surface-variant);
+    background: var(--md-surface-container);
+    border-radius: var(--shape-md);
+    padding: 10px 14px;
+    margin-top: 14px;
+    line-height: 1.6;
+    border-left: 3px solid var(--md-primary);
+  }
+
+  .info-note strong { color: var(--md-on-surface); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="app-header">
+    <div class="header-eyebrow">cause · idk math</div>
+    <h1>SMS <span class="dot">·</span> VAT <span class="dot">·</span> TDS<br>Calculator</h1>
+  </div>
+
+  <div class="m3-card">
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('fwd')">
+        <span class="tab-icon"></span> Credits → Amount
+      </button>
+      <button class="tab" onclick="switchTab('rev')">
+        <span class="tab-icon"></span> Amount → Credits
+      </button>
+    </div>
+
+    <!-- ── FORWARD: Credits → How much client pays ── -->
+    <div class="panel active" id="panel-fwd">
+
+      <div class="section">
+        <div class="section-label">SMS Credits</div>
+        <div class="row">
+          <div class="field">
+            <label>Credits to add</label>
+            <input type="number" id="f-credits" placeholder="e.g. 50000" min="0" oninput="calcFwd()">
+          </div>
+          <div class="field">
+            <label>Rate per credit (excl. VAT)</label>
+            <div class="input-wrap">
+              <span class="input-prefix">NPR</span>
+              <input type="number" id="f-rate" class="has-prefix" value="0.80" min="0" step="0.01" oninput="calcFwd()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Tax</div>
+        <div class="row">
+          <div class="field">
+            <label>VAT (fixed)</label>
+            <div class="fixed-badge">13% <strong>on rate excl. VAT</strong></div>
+          </div>
+          <div class="field">
+            <label>TDS category</label>
+            <select id="f-tds-cat" onchange="toggleFwdCustom();calcFwd()">
+              <option value="1.5" selected>Goods (1.5%)</option>
+              <option value="5">Services (5%)</option>
+              <option value="10">Rent (10%)</option>
+              <option value="15">Commission (15%)</option>
+              <option value="25">Dividend (25%)</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+        </div>
+        <div id="f-custom-wrap" style="display:none; margin-top:10px; max-width:160px">
+          <div class="field">
+            <label>Custom TDS (%)</label>
+            <input type="number" id="f-tds-custom" placeholder="0" min="0" max="100" oninput="calcFwd()">
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="results-grid">
+        <div class="result-tile">
+          <div class="result-tile-label">Base amount</div>
+          <div class="result-tile-value" id="f-r-base">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">VAT (13%)</div>
+          <div class="result-tile-value" id="f-r-vat">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">Total incl. VAT</div>
+          <div class="result-tile-value" id="f-r-incl">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">TDS deducted</div>
+          <div class="result-tile-value" id="f-r-tds">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">Rate incl. VAT</div>
+          <div class="result-tile-value" id="f-r-rate-incl">—</div>
+        </div>
+        <div class="result-tile accent">
+          <div class="result-tile-label">Client pays</div>
+          <div class="result-tile-value" id="f-r-net">—</div>
+        </div>
+      </div>
+
+      <table class="breakdown">
+        <tr><td>Credits × rate (excl. VAT)</td><td id="f-b-expr">—</td></tr>
+        <tr><td>Base amount</td><td id="f-b-base">—</td></tr>
+        <tr><td>+ VAT 13% on base</td><td id="f-b-vat">—</td></tr>
+        <tr><td>= Total incl. VAT</td><td id="f-b-incl">—</td></tr>
+        <tr class="deduction"><td>− TDS <span id="f-b-tr">1.5</span>% on base</td><td id="f-b-tds">—</td></tr>
+        <tr class="total"><td>Client pays (after TDS)</td><td id="f-b-net">—</td></tr>
+      </table>
+
+      <div class="info-note">
+        TDS is deducted from the <strong>base amount</strong> (excl. VAT). Client pays: total incl. VAT minus TDS.
+      </div>
+    </div>
+
+    <!-- ── REVERSE: Amount paid → Credits received ── -->
+    <div class="panel" id="panel-rev">
+
+      <div class="section">
+        <div class="section-label">Payment</div>
+        <div class="row">
+          <div class="field">
+            <label>Amount paid by client (after TDS)</label>
+            <div class="input-wrap">
+              <span class="input-prefix">NPR</span>
+              <input type="number" id="r-paid" class="has-prefix" placeholder="e.g. Rs. 47387" min="0" oninput="calcRev()">
+            </div>
+          </div>
+          <div class="field">
+            <label>Rate per credit (excl. VAT)</label>
+            <div class="input-wrap">
+              <span class="input-prefix">NPR</span>
+              <input type="number" id="r-rate" class="has-prefix" value="0.80" min="0" step="0.01" oninput="calcRev()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Tax</div>
+        <div class="row">
+          <div class="field">
+            <label>VAT (fixed)</label>
+            <div class="fixed-badge">13% <strong>on rate excl. VAT</strong></div>
+          </div>
+          <div class="field">
+            <label>TDS category</label>
+            <select id="r-tds-cat" onchange="toggleRevCustom();calcRev()">
+              <option value="1.5" selected>Goods (1.5%)</option>
+              <option value="5">Services (5%)</option>
+              <option value="10">Rent (10%)</option>
+              <option value="15">Commission (15%)</option>
+              <option value="25">Dividend (25%)</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+        </div>
+        <div id="r-custom-wrap" style="display:none; margin-top:10px; max-width:160px">
+          <div class="field">
+            <label>Custom TDS (%)</label>
+            <input type="number" id="r-tds-custom" placeholder="0" min="0" max="100" oninput="calcRev()">
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="results-grid">
+        <div class="result-tile">
+          <div class="result-tile-label">Base amount</div>
+          <div class="result-tile-value" id="r-r-base">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">VAT (13%)</div>
+          <div class="result-tile-value" id="r-r-vat">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">Total incl. VAT</div>
+          <div class="result-tile-value" id="r-r-incl">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">TDS deducted</div>
+          <div class="result-tile-value" id="r-r-tds">—</div>
+        </div>
+        <div class="result-tile">
+          <div class="result-tile-label">Rate incl. VAT</div>
+          <div class="result-tile-value" id="r-r-rate-incl">—</div>
+        </div>
+        <div class="result-tile accent">
+          <div class="result-tile-label">SMS credits</div>
+          <div class="result-tile-value" id="r-r-credits">—</div>
+        </div>
+      </div>
+
+      <table class="breakdown">
+        <tr><td>Amount paid (after TDS)</td><td id="r-b-paid">—</td></tr>
+        <tr><td>Derived base amount</td><td id="r-b-base">—</td></tr>
+        <tr><td>+ VAT 13% on base</td><td id="r-b-vat">—</td></tr>
+        <tr><td>= Total incl. VAT</td><td id="r-b-incl">—</td></tr>
+        <tr class="deduction"><td>− TDS <span id="r-b-tr">1.5</span>% on base</td><td id="r-b-tds">—</td></tr>
+        <tr><td>= Confirms paid amount</td><td id="r-b-confirm">—</td></tr>
+        <tr><td>Rate per credit (excl. VAT)</td><td id="r-b-rate">—</td></tr>
+        <tr class="total"><td>SMS credits received</td><td id="r-b-credits">—</td></tr>
+      </table>
+
+      <div class="info-note">
+        Formula: base = paid ÷ (1.13 − TDS%). Credits = base ÷ rate.
+      </div>
+    </div>
+
+  </div><!-- .m3-card -->
+
+</div><!-- .app -->
+
+<script>
+const VAT = 0.13;
+
+const fmt = n => 'NPR\u00a0' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtC = n => n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', ['fwd','rev'][i] === t));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + t).classList.add('active');
+}
+
+function getTDS(catId, customId) {
+  const v = document.getElementById(catId).value;
+  return v === 'custom' ? (parseFloat(document.getElementById(customId).value) || 0) : parseFloat(v);
+}
+
+function toggleFwdCustom() {
+  document.getElementById('f-custom-wrap').style.display =
+    document.getElementById('f-tds-cat').value === 'custom' ? 'block' : 'none';
+}
+function toggleRevCustom() {
+  document.getElementById('r-custom-wrap').style.display =
+    document.getElementById('r-tds-cat').value === 'custom' ? 'block' : 'none';
+}
+
+function calcFwd() {
+  const credits = parseFloat(document.getElementById('f-credits').value) || 0;
+  const rate    = parseFloat(document.getElementById('f-rate').value) || 0;
+  const tr      = getTDS('f-tds-cat', 'f-tds-custom');
+
+  const base     = credits * rate;
+  const vat      = base * VAT;
+  const incl     = base + vat;
+  const tds      = base * tr / 100;
+  const net      = incl - tds;
+  const rateIncl = rate * (1 + VAT);
+
+  set('f-r-base',      fmt(base));
+  set('f-r-vat',       fmt(vat));
+  set('f-r-incl',      fmt(incl));
+  set('f-r-tds',       fmt(tds));
+  set('f-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
+  set('f-r-net',       fmt(net));
+
+  set('f-b-expr', credits.toLocaleString('en-IN') + ' × NPR\u00a0' + rate.toFixed(2));
+  set('f-b-base', fmt(base));
+  set('f-b-vat',  fmt(vat));
+  set('f-b-incl', fmt(incl));
+  set('f-b-tr',   tr);
+  set('f-b-tds',  fmt(tds));
+  set('f-b-net',  fmt(net));
+}
+
+function calcRev() {
+  const paid = parseFloat(document.getElementById('r-paid').value) || 0;
+  const rate = parseFloat(document.getElementById('r-rate').value) || 0;
+  const tr   = getTDS('r-tds-cat', 'r-tds-custom');
+
+  // paid = base * 1.13 - base * (tr/100)
+  // paid = base * (1.13 - tr/100)
+  // base = paid / (1.13 - tr/100)
+  const divisor  = (1 + VAT) - (tr / 100);
+  const base     = divisor > 0 ? paid / divisor : 0;
+  const vat      = base * VAT;
+  const incl     = base + vat;
+  const tds      = base * tr / 100;
+  const confirm  = incl - tds;
+  const credits  = rate > 0 ? base / rate : 0;
+  const rateIncl = rate * (1 + VAT);
+
+  set('r-r-base',      fmt(base));
+  set('r-r-vat',       fmt(vat));
+  set('r-r-incl',      fmt(incl));
+  set('r-r-tds',       fmt(tds));
+  set('r-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
+  set('r-r-credits',   fmtC(credits));
+
+  set('r-b-paid',    fmt(paid));
+  set('r-b-base',    fmt(base));
+  set('r-b-vat',     fmt(vat));
+  set('r-b-incl',    fmt(incl));
+  set('r-b-tr',      tr);
+  set('r-b-tds',     fmt(tds));
+  set('r-b-confirm', fmt(confirm));
+  set('r-b-rate',    'NPR\u00a0' + rate.toFixed(2));
+  set('r-b-credits', fmtC(credits));
+}
+</script>
+</body>
+<footer style="text-align:center;padding:0.75rem;font-size:0.65rem;color:var(--text-disabled);letter-spacing:0.05em;">Copyright © 2026 <a href="https://github.com/qwertyonheist" target="_blank" style="color:var(--text-secondary);text-decoration:underline;">qwertyonheist</a></footer>
+</html>
