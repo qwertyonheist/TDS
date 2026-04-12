@@ -2,566 +2,459 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>SMS · VAT · TDS Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── Material Design 3 · Light scheme ── */
+:root {
+  --primary:        #1A5FA8;
+  --primary-cont:   #DAE8FF;
+  --on-primary-cont:#00244A;
+  --sec-cont:       #DCE8F8;
+  --on-sec-cont:    #0F1D2E;
+  --error:          #C0392B;
+  --on-surf:        #1C2028;
+  --on-surf-2:      #4A5160;
+  --on-surf-3:      #8891A0;
+  --surf-0:         #FFFFFF;
+  --surf-1:         #F4F6FB;
+  --surf-2:         #EBEEf5;
+  --surf-3:         #E2E5EE;
+  --surf-4:         #D8DCE7;
+  --outline:        #8891A0;
+  --outline-2:      #C8CDD8;
+
+  --font:  'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono:  'Noto Sans Mono', 'Consolas', monospace;
+
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-xl: 24px;
+
+  --ease-out:      cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-std:      cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
-    /* M3 color roles */
-    --md-primary:           #0057A3;
-    --md-on-primary:        #FFFFFF;
-    --md-primary-container: #D6E4FF;
-    --md-on-primary-container: #001C3E;
-    --md-secondary:         #545F71;
-    --md-on-secondary:      #FFFFFF;
-    --md-secondary-container: #D8E3F8;
-    --md-on-secondary-container: #111C2B;
-    --md-error:             #BA1A1A;
-    --md-error-container:   #FFDAD6;
-    --md-on-error-container:#410002;
-    --md-surface:           #F8F9FF;
-    --md-surface-variant:   #DFE2EB;
-    --md-on-surface:        #191C20;
-    --md-on-surface-variant:#43474E;
-    --md-outline:           #73777F;
-    --md-outline-variant:   #C3C6CF;
-    --md-surface-container-lowest:  #FFFFFF;
-    --md-surface-container-low:     #F2F3FA;
-    --md-surface-container:         #ECEFF5;
-    --md-surface-container-high:    #E6E8EF;
-    --md-surface-container-highest: #E0E2E9;
-
-    /* Typography — Cambria everywhere */
-    --font: 'Cambria', 'Georgia', serif;
-    --mono: 'Noto Sans Mono', 'Consolas', monospace;
-
-    /* M3 shape — extra curvy */
-    --shape-xs:  8px;
-    --shape-sm:  12px;
-    --shape-md:  16px;
-    --shape-lg:  20px;
-    --shape-xl:  32px;
-    --shape-full:9999px;
-
-    /* Animation easings */
-    --ease-out:     cubic-bezier(0.25, 1, 0.5, 1);
-    --ease-spring:  cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --primary:        #90B8F0;
+    --primary-cont:   #0C3868;
+    --on-primary-cont:#C8DFFF;
+    --sec-cont:       #2A3850;
+    --on-sec-cont:    #C0D0E8;
+    --error:          #F08080;
+    --on-surf:        #DDE1EC;
+    --on-surf-2:      #9BA4B5;
+    --on-surf-3:      #5A6070;
+    --surf-0:         #101318;
+    --surf-1:         #171B22;
+    --surf-2:         #1E222C;
+    --surf-3:         #252A35;
+    --surf-4:         #2C3140;
+    --outline:        #5A6070;
+    --outline-2:      #353B4A;
   }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --md-primary:           #AAC7FF;
-      --md-on-primary:        #002F65;
-      --md-primary-container: #00438F;
-      --md-on-primary-container: #D6E4FF;
-      --md-secondary:         #BBC7DB;
-      --md-on-secondary:      #263141;
-      --md-secondary-container:#3C4758;
-      --md-on-secondary-container:#D8E3F8;
-      --md-error:             #FFB4AB;
-      --md-error-container:   #93000A;
-      --md-on-error-container:#FFDAD6;
-      --md-surface:           #111318;
-      --md-surface-variant:   #43474E;
-      --md-on-surface:        #E2E2E9;
-      --md-on-surface-variant:#C3C6CF;
-      --md-outline:           #8D9199;
-      --md-outline-variant:   #43474E;
-      --md-surface-container-lowest:  #0C0E13;
-      --md-surface-container-low:     #191C20;
-      --md-surface-container:         #1D2024;
-      --md-surface-container-high:    #272A2F;
-      --md-surface-container-highest: #323539;
-    }
-  }
-
-  /* ── Animations ── */
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes panelIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes tilePop {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.018); }
-    100% { transform: scale(1); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-
-  body {
-    font-family: var(--font);
-    background: var(--md-surface-container-low);
-    color: var(--md-on-surface);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 16px 0;
-  }
-
-  .app {
-    width: 100%;
-    max-width: 548px;
-    flex: 1;
-  }
-
-  /* ── Header ── */
-  .app-header {
-    padding: 0 4px;
-    margin-bottom: 20px;
-    animation: fadeSlideUp 0.4s var(--ease-spring) both;
-  }
-
-  .header-eyebrow {
-    font-family: var(--font);
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--md-primary);
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .app-header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.15;
-    color: var(--md-on-surface);
-    letter-spacing: -.01em;
-  }
-
-  .app-header h1 .dot { color: var(--md-primary); }
-
-  /* ── M3 Surface card ── */
-  .m3-card {
-    background: var(--md-surface-container-lowest);
-    border-radius: var(--shape-xl);
-    box-shadow:
-      0 1px 2px rgba(0,0,0,.10),
-      0 2px 6px rgba(0,0,0,.06);
-    overflow: hidden;
-    animation: fadeSlideUp 0.45s var(--ease-spring) 0.06s both;
-  }
-
-  /* ── M3 Tab bar ── */
-  .tabs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-bottom: 1px solid var(--md-outline-variant);
-    background: var(--md-surface-container-low);
-  }
-
-  .tab {
-    padding: 14px 16px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: var(--font);
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--md-on-surface-variant);
-    transition: color .2s var(--ease-standard), background .2s var(--ease-standard);
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .tab-icon { font-size: 15px; }
-
-  .tab::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 3px 3px 0 0;
-    background: var(--md-primary);
-    transform: scaleX(0);
-    transition: transform 0.25s var(--ease-spring);
-  }
-
-  .tab.active {
-    color: var(--md-primary);
-    background: var(--md-surface-container-lowest);
-  }
-
-  .tab.active::after { transform: scaleX(1); }
-  .tab:first-child { border-right: 1px solid var(--md-outline-variant); }
-
-  /* ── Panels ── */
-  .panel { display: none; padding: 20px 20px 24px; }
-  .panel.active {
-    display: block;
-    animation: panelIn 0.22s var(--ease-out) both;
-  }
-
-  /* ── Section headers ── */
-  .section { margin-bottom: 16px; }
-
-  .section-label {
-    font-family: var(--font);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .07em;
-    text-transform: uppercase;
-    color: var(--md-primary);
-    margin-bottom: 10px;
-  }
-
-  /* ── Grid layouts ── */
-  .row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-
-  @media (max-width: 400px) {
-    .row, .row3 { grid-template-columns: 1fr 1fr; }
-  }
-
-  /* ── M3 Outlined Text Field ── */
-  .field { display: flex; flex-direction: column; gap: 4px; }
-
-  .field label {
-    font-family: var(--font);
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--md-on-surface-variant);
-    letter-spacing: .01em;
-  }
-
-  .input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .input-prefix {
-    position: absolute;
-    left: 12px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--md-outline);
-    pointer-events: none;
-    user-select: none;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--md-outline);
-    border-radius: var(--shape-xs);
-    background: var(--md-surface-container-lowest);
-    color: var(--md-on-surface);
-    font-size: 14px;
-    font-family: var(--mono);
-    appearance: none;
-    -webkit-appearance: none;
-    transition: border-color .18s var(--ease-standard), box-shadow .18s var(--ease-standard);
-  }
-
-  input:focus, select:focus {
-    outline: none;
-    border-color: var(--md-primary);
-    border-width: 2px;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 12%, transparent);
-  }
-
-  input.has-prefix { padding-left: 36px; }
-
-  select {
-    font-family: var(--font);
-    font-size: 13px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2373777F' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
-  }
-
-  select option {
-    background: var(--md-surface-container-highest);
-    color: var(--md-on-surface);
-  }
-
-  /* ── Custom TDS dropdown ── */
-  .custom-select {
-    position: relative;
-  }
-
-  .custom-select-trigger {
-    width: 100%;
-    padding: 10px 36px 10px 12px;
-    border: 1px solid var(--md-outline);
-    border-radius: var(--shape-xs);
-    background: var(--md-surface-container-lowest);
-    color: var(--md-on-surface);
-    font-size: 13px;
-    font-family: var(--font);
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: border-color .18s var(--ease-standard), box-shadow .18s var(--ease-standard);
-    user-select: none;
-    text-align: left;
-  }
-
-  .custom-select-trigger::after {
-    content: '';
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 10px;
-    height: 6px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2373777F' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    transition: transform .2s var(--ease-standard);
-  }
-
-  .custom-select.open .custom-select-trigger {
-    border-color: var(--md-primary);
-    border-width: 2px;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 12%, transparent);
-  }
-
-  .custom-select.open .custom-select-trigger::after {
-    transform: translateY(-50%) rotate(180deg);
-  }
-
-  .custom-select-menu {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0; right: 0;
-    background: var(--md-surface-container-lowest);
-    border: 1px solid var(--md-outline-variant);
-    border-radius: var(--shape-sm);
-    box-shadow: 0 4px 16px rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.08);
-    z-index: 100;
-    overflow: hidden;
-    display: none;
-    animation: menuIn 0.18s var(--ease-spring) both;
-  }
-
-  @keyframes menuIn {
-    from { opacity: 0; transform: translateY(-4px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .custom-select.open .custom-select-menu {
-    display: block;
-  }
-
-  .custom-select-option {
-    padding: 10px 14px;
-    font-size: 13px;
-    font-family: var(--font);
-    color: var(--md-on-surface);
-    cursor: pointer;
-    transition: background .12s var(--ease-standard);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .custom-select-option:hover {
-    background: var(--md-surface-container);
-  }
-
-  .custom-select-option.selected {
-    background: var(--md-primary-container);
-    color: var(--md-on-primary-container);
-    font-weight: 600;
-  }
-
-  .custom-select-option .opt-pct {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--md-on-surface-variant);
-    opacity: .7;
-  }
-
-  .custom-select-option.selected .opt-pct {
-    color: var(--md-on-primary-container);
-    opacity: .6;
-  }
-
-  input[type=number]::-webkit-inner-spin-button { opacity: .35; }
-
-  /* ── Fixed VAT badge — M3 Assist chip style ── */
-  .fixed-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-family: var(--font);
-    font-size: 12px;
-    color: var(--md-on-secondary-container);
-    background: var(--md-secondary-container);
-    border: 1px solid var(--md-outline-variant);
-    border-radius: var(--shape-full);
-    padding: 6px 12px;
-    font-weight: 600;
-    line-height: 1;
-  }
-
-  /* ── Divider ── */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--md-outline-variant);
-    margin: 16px 0;
-  }
-
-  /* ── M3 Result tiles — tonal surface ── */
-  .results-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .result-tile {
-    background: var(--md-surface-container);
-    border-radius: var(--shape-md);
-    padding: 12px 13px;
-    transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
-    cursor: default;
-  }
-
-  .result-tile:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0,0,0,.08);
-  }
-
-  .result-tile.pop {
-    animation: tilePop 0.3s var(--ease-out);
-  }
-
-  .result-tile.accent {
-    background: var(--md-primary-container);
-  }
-
-  .result-tile-label {
-    font-family: var(--font);
-    font-size: 10.5px;
-    font-weight: 600;
-    color: var(--md-on-surface-variant);
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: .01em;
-  }
-
-  .result-tile.accent .result-tile-label {
-    color: var(--md-on-primary-container);
-    opacity: .75;
-  }
-
-  .result-tile-value {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--md-on-surface);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .result-tile.accent .result-tile-value {
-    color: var(--md-on-primary-container);
-    font-weight: 700;
-  }
-
-  /* ── Breakdown table ── */
-  .breakdown {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .breakdown tr td {
-    padding: 5px 0;
-    font-size: 13px;
-    font-family: var(--font);
-  }
-
-  .breakdown tr td:first-child {
-    color: var(--md-on-surface-variant);
-  }
-
-  .breakdown tr td:last-child {
-    text-align: right;
-    font-family: var(--mono);
-    font-size: 12.5px;
-    color: var(--md-on-surface);
-  }
-
-  .breakdown tr.deduction td:last-child {
-    color: var(--md-error);
-  }
-
-  .breakdown tr.total td {
-    padding-top: 11px;
-    border-top: 1px solid var(--md-outline-variant);
-    font-size: 14.5px;
-    font-weight: 700;
-  }
-
-  .breakdown tr.total td:last-child {
-    font-family: var(--mono);
-    font-size: 14.5px;
-    color: var(--md-primary);
-    font-weight: 700;
-  }
-
-  /* ── M3 info banner ── */
-  .info-note {
-    font-family: var(--font);
-    font-size: 12px;
-    color: var(--md-on-surface-variant);
-    background: var(--md-surface-container);
-    border-radius: var(--shape-md);
-    padding: 10px 14px;
-    margin-top: 14px;
-    line-height: 1.6;
-    border-left: 3px solid var(--md-primary);
-  }
-
-  .info-note strong { color: var(--md-on-surface); }
+}
+
+/* tilePop uses outline-based glow — no scale, no layout shift */
+@keyframes fadeUp   { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+@keyframes panelIn  { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+@keyframes menuIn   { from{opacity:0;transform:translateY(-4px) scale(.98)} to{opacity:1;transform:scale(1)} }
+@keyframes tilePulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 30%, transparent); }
+  60%  { box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; }
+}
+
+body {
+  font-family: var(--font);
+  background: var(--surf-1);
+  color: var(--on-surf);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 0;
+  padding-top: max(28px, env(safe-area-inset-top));
+  -webkit-font-smoothing: antialiased;
+}
+
+.app { width:100%; max-width:600px; flex:1; }
+
+/* ── Header ── */
+.app-header {
+  padding: 0 2px;
+  margin-bottom: 20px;
+  animation: fadeUp .38s var(--ease-spring) both;
+}
+.eyebrow {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--primary); margin-bottom: 5px;
+}
+.app-header h1 {
+  font-size: 23px; font-weight: 700; line-height: 1.2;
+  letter-spacing: -.02em; color: var(--on-surf);
+}
+.app-header h1 .dot { color: var(--primary); }
+
+/* ── Single card ── */
+.card {
+  background: var(--surf-0);
+  border-radius: var(--r-xl);
+  box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 3px 10px rgba(0,0,0,.06);
+  overflow: visible;
+  animation: fadeUp .42s var(--ease-spring) .05s both;
+  margin-bottom: 20px;
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--outline-2);
+  background: var(--surf-1);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  overflow: hidden;
+}
+.tab {
+  padding: 13px 6px 11px;
+  font-size: 11.5px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; border: none; background: transparent;
+  color: var(--on-surf-2);
+  transition: color .18s var(--ease-std), background .18s var(--ease-std);
+  position: relative; text-align: center; line-height: 1.3;
+  /* Better touch targets on mobile */
+  min-height: 48px; display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.tab::after {
+  content:''; position:absolute; bottom:0; left:0; right:0;
+  height:2.5px; border-radius:2px 2px 0 0;
+  background: var(--primary); transform:scaleX(0);
+  transition: transform .24s var(--ease-spring);
+}
+.tab.active { color:var(--primary); background:var(--surf-0); }
+.tab.active::after { transform:scaleX(1); }
+.tab:not(:last-child) { border-right:1px solid var(--outline-2); }
+
+/* ── Panels ── */
+.panel { display:none; padding:20px 20px 24px; }
+.panel.active { display:block; animation:panelIn .2s var(--ease-out) both; }
+
+/* ── Section ── */
+.section { margin-bottom:16px; }
+.section-label {
+  font-size:10px; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--primary); margin-bottom:10px;
+}
+
+/* ── Grid ── */
+.row  { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+@media(max-width:440px){ .row,.row3{ grid-template-columns:1fr; } }
+
+/* ── Fields ── */
+.field { display:flex; flex-direction:column; gap:5px; }
+.field label { font-size:11.5px; font-weight:600; color:var(--on-surf-2); line-height:1; }
+
+.input-wrap { position:relative; display:flex; align-items:center; }
+.input-prefix {
+  position:absolute; left:11px; z-index:1;
+  font-family:var(--mono); font-size:11px; color:var(--on-surf-3);
+  pointer-events:none; user-select:none;
+}
+
+input[type=number] {
+  width:100%; padding:10px 11px;
+  border:1.5px solid var(--outline-2); border-radius:var(--r-xs);
+  background:var(--surf-0); color:var(--on-surf);
+  font-size:14px; font-family:var(--mono); font-weight:400;
+  appearance:none; -webkit-appearance:none;
+  transition:border-color .16s var(--ease-std), box-shadow .16s var(--ease-std);
+  /* Prevent iOS zoom on focus (font-size ≥ 16px handled per-input) */
+  touch-action: manipulation;
+}
+input.has-prefix { padding-left:34px; }
+input:focus {
+  outline:none; border-color:var(--primary); border-width:2px;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 14%,transparent);
+}
+input[type=number]::-webkit-inner-spin-button { opacity:.3; }
+/* iOS zoom prevention: keep visual size 14px but set actual to 16px */
+@media(max-width:480px){
+  input[type=number] { font-size:16px; }
+}
+
+/* Dimmed input state (quick tab inactive side) */
+input.dimmed {
+  opacity:.45;
+  pointer-events:none;
+}
+
+/* ── Badge ── */
+.badge {
+  display:inline-flex; align-items:center;
+  font-size:12px; font-weight:600; font-family:var(--font);
+  color:var(--on-sec-cont); background:var(--sec-cont);
+  border:1px solid var(--outline-2); border-radius:var(--r-xl);
+  padding:6px 12px; line-height:1; white-space:nowrap;
+}
+
+/* ── Custom dropdown ── */
+.custom-select { position:relative; }
+.custom-select-trigger {
+  width:100%; padding:10px 32px 10px 11px;
+  border:1.5px solid var(--outline-2); border-radius:var(--r-xs);
+  background:var(--surf-0); color:var(--on-surf);
+  font-size:13px; font-family:var(--font); font-weight:500;
+  cursor:pointer; user-select:none; position:relative;
+  transition:border-color .16s var(--ease-std), box-shadow .16s var(--ease-std);
+  min-height:44px; display:flex; align-items:center;
+  -webkit-tap-highlight-color: transparent;
+}
+.custom-select-trigger::after {
+  content:''; position:absolute; right:11px; top:50%; transform:translateY(-50%);
+  width:10px; height:6px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238891A0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; transition:transform .18s var(--ease-std);
+}
+.custom-select.open .custom-select-trigger {
+  border-color:var(--primary); border-width:2px;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 14%,transparent);
+}
+.custom-select.open .custom-select-trigger::after { transform:translateY(-50%) rotate(180deg); }
+.custom-select-menu {
+  position:absolute; top:calc(100% + 4px); left:0; right:0;
+  background:var(--surf-0); border:1.5px solid var(--outline-2);
+  border-radius:var(--r-sm);
+  box-shadow:0 4px 18px rgba(0,0,0,.13), 0 1px 4px rgba(0,0,0,.07);
+  z-index:300; overflow:hidden; display:none;
+}
+.custom-select.open .custom-select-menu { display:block; animation:menuIn .16s var(--ease-spring) both; }
+.custom-select-option {
+  padding:11px 13px; font-size:13px; font-family:var(--font); font-weight:500;
+  color:var(--on-surf); cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between;
+  transition:background .1s var(--ease-std);
+  min-height:44px;
+}
+.custom-select-option:hover { background:var(--surf-2); }
+.custom-select-option.selected { background:var(--primary-cont); color:var(--on-primary-cont); font-weight:700; }
+.opt-pct { font-family:var(--mono); font-size:11px; color:var(--on-surf-2); opacity:.8; }
+.custom-select-option.selected .opt-pct { color:var(--on-primary-cont); opacity:.65; }
+
+/* ── Divider ── */
+.divider { border:none; border-top:1px solid var(--outline-2); margin:16px 0; }
+
+/* ── Result tiles ── */
+.results-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px; }
+@media(max-width:360px){ .results-grid{ grid-template-columns:repeat(2,1fr); } }
+
+.result-tile {
+  background:var(--surf-2); border-radius:var(--r-md);
+  padding:11px 12px;
+  /* Fixed height replaced with min-height to prevent layout shift */
+  min-height:62px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  overflow:hidden;
+  /* No transform on hover — avoids shifting neighbours */
+  transition:box-shadow .16s var(--ease-out);
+  will-change:box-shadow;
+}
+.result-tile:hover { box-shadow:0 3px 8px rgba(0,0,0,.08); }
+.result-tile.accent { background:var(--primary-cont); }
+/* Pulse glow instead of scale — zero layout impact */
+.result-tile.pop { animation:tilePulse .32s var(--ease-out); }
+.tile-label {
+  font-size:10px; font-weight:600; color:var(--on-surf-2);
+  letter-spacing:.01em; white-space:nowrap;
+}
+.tile-value {
+  font-family:var(--mono); font-size:12px; font-weight:500; color:var(--on-surf);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.result-tile.accent .tile-label { color:var(--on-primary-cont); opacity:.75; }
+.result-tile.accent .tile-value { color:var(--on-primary-cont); font-weight:700; }
+
+/* ── Breakdown table ── */
+.breakdown { width:100%; border-collapse:collapse; }
+.breakdown td { padding:5px 0; font-size:12.5px; line-height:1.4; }
+.breakdown td:first-child { color:var(--on-surf-2); font-weight:500; }
+.breakdown td:last-child {
+  text-align:right; font-family:var(--mono); font-size:12px;
+  color:var(--on-surf); max-width:180px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.breakdown .deduction td:last-child { color:var(--error); }
+.breakdown .total td { border-top:1px solid var(--outline-2); padding-top:10px; font-size:14px; font-weight:700; }
+.breakdown .total td:last-child { color:var(--primary); font-family:var(--mono); }
+
+/* ── Info note ── */
+.info-note {
+  font-size:12.5px; line-height:1.65; color:var(--on-surf-2);
+  background:var(--surf-2); border-radius:var(--r-md);
+  padding:12px 14px; margin-top:14px;
+  border-left:3px solid var(--primary);
+}
+.info-note strong { color:var(--on-surf); font-weight:600; }
+
+/* ── Quick converter panel ── */
+.quick-rate-row {
+  display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;
+}
+.quick-rate-row label { font-size:11.5px; font-weight:600; color:var(--on-surf-2); white-space:nowrap; }
+.quick-rate-row .input-wrap { flex:1; min-width:110px; max-width:160px; }
+
+/* Two tile inputs */
+.quick-tiles {
+  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;
+  margin-bottom:14px;
+}
+.q-sep {
+  font-size:18px; color:var(--on-surf-3); padding:0 10px;
+  user-select:none; line-height:1; padding-top:22px; /* offset below label */
+}
+.q-tile {
+  display:flex; flex-direction:column; gap:7px;
+}
+.q-tile-label {
+  font-size:10px; font-weight:700; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--on-surf-3);
+}
+.q-tile-box {
+  background:var(--surf-2); border-radius:var(--r-md);
+  padding:14px 16px; border:2px solid transparent;
+  transition:border-color .16s var(--ease-std), background .16s var(--ease-std);
+  cursor:text;
+}
+.q-tile-box:focus-within {
+  border-color:var(--primary); background:var(--surf-0);
+}
+.q-tile-box.has-value {
+  border-color:var(--primary); background:var(--surf-0);
+}
+.q-tile-unit {
+  font-size:10px; font-weight:600; color:var(--on-surf-3);
+  margin-bottom:4px; letter-spacing:.03em;
+}
+.q-tile-box input[type=number] {
+  width:100%; border:none; background:transparent; outline:none;
+  font-family:var(--mono); font-size:22px; font-weight:700;
+  color:var(--on-surf); padding:0; box-shadow:none;
+  caret-color:var(--primary); touch-action:manipulation;
+}
+.q-tile-box input:focus { box-shadow:none; border:none; }
+.q-tile-box input::placeholder { color:var(--on-surf-3); font-weight:400; }
+/* output tile */
+.q-tile-box.output {
+  background:var(--primary-cont); border-color:transparent; cursor:default;
+}
+.q-tile-box.output .q-tile-unit { color:var(--on-primary-cont); opacity:.6; }
+.q-tile-box.output .q-out-val {
+  font-family:var(--mono); font-size:22px; font-weight:700;
+  color:var(--on-primary-cont); white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.q-tile-box.output .q-out-sub {
+  font-family:var(--mono); font-size:10.5px;
+  color:var(--on-primary-cont); opacity:.55;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  margin-top:3px; min-height:14px;
+}
+.q-tile-box.output.empty { background:var(--surf-2); }
+.q-tile-box.output.empty .q-out-val { color:var(--on-surf-3); font-weight:400; font-size:18px; }
+.q-tile-box.output.empty .q-tile-unit { color:var(--on-surf-3); opacity:1; }
+.q-tile-box.pop { animation:tilePulse .32s var(--ease-out); }
+@media(max-width:480px){
+  .q-tile-box input[type=number],
+  .q-tile-box.output .q-out-val { font-size:18px; }
+  .q-tile-box.output.empty .q-out-val { font-size:15px; }
+}
+@media(max-width:340px){
+  .quick-tiles { grid-template-columns:1fr; }
+  .q-sep { display:none; }
+}
+
+/* ── How it works ── */
+.how-block { margin-bottom:12px; }
+.how-block h3 { font-size:13px; font-weight:700; color:var(--on-surf); margin-bottom:4px; }
+.how-block p  { font-size:12.5px; line-height:1.6; color:var(--on-surf-2); }
+
+footer {
+  width:100%; text-align:center; padding:1.1rem .75rem;
+  padding-bottom: max(1.1rem, env(safe-area-inset-bottom));
+  font-size:.63rem; letter-spacing:.05em; color:var(--on-surf-3); margin-top:4px;
+}
+footer a { color:var(--primary); text-decoration:underline; }
 </style>
 </head>
 <body>
 <div class="app">
 
   <div class="app-header">
-    <div class="header-eyebrow">cause · idk math</div>
-    <h1>SMS <span class="dot">·</span> VAT <span class="dot">·</span> TDS<br>Calculator</h1>
+    <div class="eyebrow">cause · idk math</div>
+    <h1>SMS <span class="dot">·</span> VAT <span class="dot">·</span> TDS Calculator</h1>
   </div>
 
-  <div class="m3-card">
-
+  <div class="card">
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('fwd')">Credits → Amount</button>
+      <button class="tab active" onclick="switchTab('quick')">Quick</button>
+      <button class="tab" onclick="switchTab('fwd')">Credits → Amount</button>
       <button class="tab" onclick="switchTab('rev')">Amount → Credits</button>
+      <button class="tab" onclick="switchTab('info')">How it works</button>
     </div>
 
-    <!-- ── FORWARD: Credits → How much client pays ── -->
-    <div class="panel active" id="panel-fwd">
+    <!-- ══ QUICK CONVERTER ══ -->
+    <div class="panel active" id="panel-quick">
+      <div class="section">
+        <div class="section-label">Rate</div>
+        <div class="quick-rate-row">
+          <label>Rate per credit (excl. VAT)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">NPR</span>
+            <input type="number" id="q-rate" class="has-prefix" value="1.00" min="0" step="0.01" oninput="calcQuick()">
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-label">Convert</div>
+        <div class="quick-tiles">
+          <!-- Credits input tile -->
+          <div class="q-tile">
+            <div class="q-tile-label">Credits</div>
+            <div class="q-tile-box" id="q-box-credits" onclick="this.querySelector('input').focus()">
+              <div class="q-tile-unit">SMS</div>
+              <input type="number" id="q-credits" placeholder="0" min="0" oninput="quickFrom('credits')">
+            </div>
+          </div>
+          <div class="q-sep">⇄</div>
+          <!-- Amount output/input tile -->
+          <div class="q-tile">
+            <div class="q-tile-label">Amount (incl. VAT)</div>
+            <div class="q-tile-box" id="q-box-amount" onclick="this.querySelector('input').focus()">
+              <div class="q-tile-unit">NPR</div>
+              <input type="number" id="q-amount" placeholder="0" min="0" oninput="quickFrom('amount')">
+            </div>
+          </div>
+        </div>
+        <!-- Base amount note -->
+        <div id="q-base-note" style="font-family:var(--mono);font-size:11px;color:var(--on-surf-3);margin-top:6px;min-height:16px;"></div>
+      </div>
+      <div class="info-note">Simple credits ↔ amount converter. <strong>VAT 13%</strong> included. No TDS — use the other tabs for full billing calculations.</div>
+    </div>
 
+    <!-- ══ FORWARD ══ -->
+    <div class="panel" id="panel-fwd">
       <div class="section">
         <div class="section-label">SMS Credits</div>
         <div class="row">
@@ -578,13 +471,12 @@
           </div>
         </div>
       </div>
-
       <div class="section">
         <div class="section-label">Tax</div>
         <div class="row">
           <div class="field">
             <label>VAT (fixed)</label>
-            <div class="fixed-badge">13% <strong>on rate excl. VAT</strong></div>
+            <div class="badge">13% on base rate</div>
           </div>
           <div class="field">
             <label>TDS category</label>
@@ -592,53 +484,32 @@
               <div class="custom-select-trigger" onclick="toggleDropdown('f-tds-select')">Goods (1.5%)</div>
               <div class="custom-select-menu">
                 <div class="custom-select-option selected" data-value="1.5" onclick="selectOption('f-tds-select','1.5','Goods (1.5%)')"><span>Goods</span><span class="opt-pct">1.5%</span></div>
-                <div class="custom-select-option" data-value="5"    onclick="selectOption('f-tds-select','5','Services (5%)')"><span>Services</span><span class="opt-pct">5%</span></div>
-                <div class="custom-select-option" data-value="10"   onclick="selectOption('f-tds-select','10','Rent (10%)')"><span>Rent</span><span class="opt-pct">10%</span></div>
-                <div class="custom-select-option" data-value="15"   onclick="selectOption('f-tds-select','15','Commission (15%)')"><span>Commission</span><span class="opt-pct">15%</span></div>
-                <div class="custom-select-option" data-value="25"   onclick="selectOption('f-tds-select','25','Dividend (25%)')"><span>Dividend</span><span class="opt-pct">25%</span></div>
-                <div class="custom-select-option" data-value="custom" onclick="selectOption('f-tds-select','custom','Custom')"><span>Custom</span><span class="opt-pct">—</span></div>
+                <div class="custom-select-option" data-value="5" onclick="selectOption('f-tds-select','5','Services (5%)')"><span>Services</span><span class="opt-pct">5%</span></div>
+                <div class="custom-select-option" data-value="10" onclick="selectOption('f-tds-select','10','Rent (10%)')"><span>Rent</span><span class="opt-pct">10%</span></div>
+                <div class="custom-select-option" data-value="15" onclick="selectOption('f-tds-select','15','Commission (15%)')"><span>Commission</span><span class="opt-pct">15%</span></div>
+                <div class="custom-select-option" data-value="25" onclick="selectOption('f-tds-select','25','Dividend (25%)')"><span>Dividend</span><span class="opt-pct">25%</span></div>
+                <div class="custom-select-option" data-value="custom" onclick="selectOption('f-tds-select','custom','Custom %')"><span>Custom</span><span class="opt-pct">—</span></div>
               </div>
             </div>
             <input type="hidden" id="f-tds-cat" value="1.5">
           </div>
         </div>
-        <div id="f-custom-wrap" style="display:none; margin-top:10px; max-width:160px">
+        <div id="f-custom-wrap" style="display:none;margin-top:10px;max-width:160px">
           <div class="field">
             <label>Custom TDS (%)</label>
             <input type="number" id="f-tds-custom" placeholder="0" min="0" max="100" oninput="calcFwd()">
           </div>
         </div>
       </div>
-
       <hr class="divider">
-
       <div class="results-grid">
-        <div class="result-tile">
-          <div class="result-tile-label">Base amount</div>
-          <div class="result-tile-value" id="f-r-base">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">VAT (13%)</div>
-          <div class="result-tile-value" id="f-r-vat">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">Total incl. VAT</div>
-          <div class="result-tile-value" id="f-r-incl">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">TDS deducted</div>
-          <div class="result-tile-value" id="f-r-tds">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">Rate incl. VAT</div>
-          <div class="result-tile-value" id="f-r-rate-incl">—</div>
-        </div>
-        <div class="result-tile accent">
-          <div class="result-tile-label">Client pays</div>
-          <div class="result-tile-value" id="f-r-net">—</div>
-        </div>
+        <div class="result-tile"><div class="tile-label">Base amount</div><div class="tile-value" id="f-r-base">—</div></div>
+        <div class="result-tile"><div class="tile-label">VAT (13%)</div><div class="tile-value" id="f-r-vat">—</div></div>
+        <div class="result-tile"><div class="tile-label">Total incl. VAT</div><div class="tile-value" id="f-r-incl">—</div></div>
+        <div class="result-tile"><div class="tile-label">TDS deducted</div><div class="tile-value" id="f-r-tds">—</div></div>
+        <div class="result-tile"><div class="tile-label">Rate incl. VAT</div><div class="tile-value" id="f-r-rate-incl">—</div></div>
+        <div class="result-tile accent"><div class="tile-label">Client pays</div><div class="tile-value" id="f-r-net">—</div></div>
       </div>
-
       <table class="breakdown">
         <tr><td>Credits × rate (excl. VAT)</td><td id="f-b-expr">—</td></tr>
         <tr><td>Base amount</td><td id="f-b-base">—</td></tr>
@@ -647,20 +518,16 @@
         <tr class="deduction"><td>− TDS <span id="f-b-tr">1.5</span>% on base</td><td id="f-b-tds">—</td></tr>
         <tr class="total"><td>Client pays (after TDS)</td><td id="f-b-net">—</td></tr>
       </table>
-
-      <div class="info-note">
-        TDS is deducted from the <strong>base amount</strong> (excl. VAT). Client pays: total incl. VAT minus TDS.
-      </div>
+      <div class="info-note">TDS deducted from <strong>base amount</strong> (excl. VAT). Client pays: total incl. VAT − TDS.</div>
     </div>
 
-    <!-- ── REVERSE: Amount paid → Credits received ── -->
+    <!-- ══ REVERSE ══ -->
     <div class="panel" id="panel-rev">
-
       <div class="section">
         <div class="section-label">Payment</div>
         <div class="row">
           <div class="field">
-            <label>Amount paid by client (after TDS)</label>
+            <label>Amount paid (after TDS)</label>
             <div class="input-wrap">
               <span class="input-prefix">NPR</span>
               <input type="number" id="r-paid" class="has-prefix" placeholder="e.g. 47387" min="0" oninput="calcRev()">
@@ -675,13 +542,12 @@
           </div>
         </div>
       </div>
-
       <div class="section">
         <div class="section-label">Tax</div>
         <div class="row">
           <div class="field">
             <label>VAT (fixed)</label>
-            <div class="fixed-badge">13% <strong>on rate excl. VAT</strong></div>
+            <div class="badge">13% on base rate</div>
           </div>
           <div class="field">
             <label>TDS category</label>
@@ -689,212 +555,193 @@
               <div class="custom-select-trigger" onclick="toggleDropdown('r-tds-select')">Goods (1.5%)</div>
               <div class="custom-select-menu">
                 <div class="custom-select-option selected" data-value="1.5" onclick="selectOption('r-tds-select','1.5','Goods (1.5%)')"><span>Goods</span><span class="opt-pct">1.5%</span></div>
-                <div class="custom-select-option" data-value="5"    onclick="selectOption('r-tds-select','5','Services (5%)')"><span>Services</span><span class="opt-pct">5%</span></div>
-                <div class="custom-select-option" data-value="10"   onclick="selectOption('r-tds-select','10','Rent (10%)')"><span>Rent</span><span class="opt-pct">10%</span></div>
-                <div class="custom-select-option" data-value="15"   onclick="selectOption('r-tds-select','15','Commission (15%)')"><span>Commission</span><span class="opt-pct">15%</span></div>
-                <div class="custom-select-option" data-value="25"   onclick="selectOption('r-tds-select','25','Dividend (25%)')"><span>Dividend</span><span class="opt-pct">25%</span></div>
-                <div class="custom-select-option" data-value="custom" onclick="selectOption('r-tds-select','custom','Custom')"><span>Custom</span><span class="opt-pct">—</span></div>
+                <div class="custom-select-option" data-value="5" onclick="selectOption('r-tds-select','5','Services (5%)')"><span>Services</span><span class="opt-pct">5%</span></div>
+                <div class="custom-select-option" data-value="10" onclick="selectOption('r-tds-select','10','Rent (10%)')"><span>Rent</span><span class="opt-pct">10%</span></div>
+                <div class="custom-select-option" data-value="15" onclick="selectOption('r-tds-select','15','Commission (15%)')"><span>Commission</span><span class="opt-pct">15%</span></div>
+                <div class="custom-select-option" data-value="25" onclick="selectOption('r-tds-select','25','Dividend (25%)')"><span>Dividend</span><span class="opt-pct">25%</span></div>
+                <div class="custom-select-option" data-value="custom" onclick="selectOption('r-tds-select','custom','Custom %')"><span>Custom</span><span class="opt-pct">—</span></div>
               </div>
             </div>
             <input type="hidden" id="r-tds-cat" value="1.5">
           </div>
         </div>
-        <div id="r-custom-wrap" style="display:none; margin-top:10px; max-width:160px">
+        <div id="r-custom-wrap" style="display:none;margin-top:10px;max-width:160px">
           <div class="field">
             <label>Custom TDS (%)</label>
             <input type="number" id="r-tds-custom" placeholder="0" min="0" max="100" oninput="calcRev()">
           </div>
         </div>
       </div>
-
       <hr class="divider">
-
       <div class="results-grid">
-        <div class="result-tile">
-          <div class="result-tile-label">Base amount</div>
-          <div class="result-tile-value" id="r-r-base">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">VAT (13%)</div>
-          <div class="result-tile-value" id="r-r-vat">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">Total incl. VAT</div>
-          <div class="result-tile-value" id="r-r-incl">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">TDS deducted</div>
-          <div class="result-tile-value" id="r-r-tds">—</div>
-        </div>
-        <div class="result-tile">
-          <div class="result-tile-label">Rate incl. VAT</div>
-          <div class="result-tile-value" id="r-r-rate-incl">—</div>
-        </div>
-        <div class="result-tile accent">
-          <div class="result-tile-label">SMS credits</div>
-          <div class="result-tile-value" id="r-r-credits">—</div>
-        </div>
+        <div class="result-tile"><div class="tile-label">Base amount</div><div class="tile-value" id="r-r-base">—</div></div>
+        <div class="result-tile"><div class="tile-label">VAT (13%)</div><div class="tile-value" id="r-r-vat">—</div></div>
+        <div class="result-tile"><div class="tile-label">Total incl. VAT</div><div class="tile-value" id="r-r-incl">—</div></div>
+        <div class="result-tile"><div class="tile-label">TDS deducted</div><div class="tile-value" id="r-r-tds">—</div></div>
+        <div class="result-tile"><div class="tile-label">Rate incl. VAT</div><div class="tile-value" id="r-r-rate-incl">—</div></div>
+        <div class="result-tile accent"><div class="tile-label">SMS credits</div><div class="tile-value" id="r-r-credits">—</div></div>
       </div>
-
       <table class="breakdown">
         <tr><td>Amount paid (after TDS)</td><td id="r-b-paid">—</td></tr>
         <tr><td>Derived base amount</td><td id="r-b-base">—</td></tr>
         <tr><td>+ VAT 13% on base</td><td id="r-b-vat">—</td></tr>
         <tr><td>= Total incl. VAT</td><td id="r-b-incl">—</td></tr>
         <tr class="deduction"><td>− TDS <span id="r-b-tr">1.5</span>% on base</td><td id="r-b-tds">—</td></tr>
-        <tr><td>= Confirms paid amount</td><td id="r-b-confirm">—</td></tr>
-        <tr><td>Rate per credit (excl. VAT)</td><td id="r-b-rate">—</td></tr>
+        <tr><td>= Confirms paid</td><td id="r-b-confirm">—</td></tr>
+        <tr><td>Rate per credit</td><td id="r-b-rate">—</td></tr>
         <tr class="total"><td>SMS credits received</td><td id="r-b-credits">—</td></tr>
       </table>
+      <div class="info-note">Formula: base = paid ÷ (1.13 − TDS%). Credits = base ÷ rate.</div>
+    </div>
 
-      <div class="info-note">
-        Formula: base = paid ÷ (1.13 − TDS%). Credits = base ÷ rate.
+    <!-- ══ HOW IT WORKS ══ -->
+    <div class="panel" id="panel-info">
+      <div class="how-block">
+        <h3>Quick tab</h3>
+        <p>Simple credits ↔ NPR converter including VAT. No TDS applied. Type in either the Credits or Amount field — the other becomes the output. Tap the × button to switch direction.</p>
+      </div>
+      <div class="how-block">
+        <h3>Credits → Amount</h3>
+        <p>Enter the number of credits and rate to find the exact amount a client needs to pay after TDS is deducted.</p>
+      </div>
+      <div class="how-block">
+        <h3>Amount → Credits</h3>
+        <p>Enter what a client actually paid (after TDS) to back-calculate how many SMS credits they should receive.</p>
+      </div>
+      <hr class="divider" style="margin:14px 0">
+      <div class="how-block">
+        <h3>Tax logic</h3>
+        <p><strong>VAT</strong> is fixed at 13% applied on the base rate (excl. VAT).<br>
+        <strong>TDS</strong> is deducted from the base amount only — not the VAT-inclusive total.<br>
+        <strong>Net payable</strong> = (Base + VAT) − TDS.</p>
       </div>
     </div>
 
-  </div><!-- .m3-card -->
-
+  </div><!-- .card -->
 </div><!-- .app -->
 
-<footer style="width:100%;text-align:center;padding:1.25rem 0.75rem;font-size:0.65rem;color:var(--md-on-surface-variant);letter-spacing:0.05em;margin-top:20px;">Copyright © 2026 <a href="https://github.com/qwertyonheist" target="_blank" style="color:var(--md-primary);text-decoration:underline;">qwertyonheist</a></footer>
+<footer>Copyright © 2026 <a href="https://github.com/qwertyonheist" target="_blank">qwertyonheist</a></footer>
 
 <script>
-const VAT = 0.13;
+const VAT  = 0.13;
+const fmt  = n => 'NPR\u00a0' + n.toLocaleString('en-IN', {minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtC = n => n.toLocaleString('en-IN', {minimumFractionDigits:2,maximumFractionDigits:2});
+const set  = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
 
-const fmt = n => 'NPR\u00a0' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
-const fmtC = n => n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
-const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-
-function popTile(valueEl) {
-  const tile = valueEl && valueEl.closest('.result-tile');
-  if (!tile) return;
-  tile.classList.remove('pop');
-  void tile.offsetWidth; // reflow to restart animation
-  tile.classList.add('pop');
-  tile.addEventListener('animationend', () => tile.classList.remove('pop'), { once: true });
+function popEl(el) {
+  const t = el && el.closest('.result-tile,.qr');
+  if (!t) return;
+  t.classList.remove('pop'); void t.offsetWidth;
+  t.classList.add('pop');
+  t.addEventListener('animationend', () => t.classList.remove('pop'), {once:true});
+}
+function setP(id, v) {
+  const e = document.getElementById(id);
+  if (!e) return;
+  if (e.textContent !== v) { e.textContent = v; popEl(e); }
 }
 
-function setAndPop(id, val) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if (el.textContent !== val) {
-    el.textContent = val;
-    popTile(el);
-  }
-}
-
+const TABS = ['quick','fwd','rev','info'];
 function switchTab(t) {
-  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', ['fwd','rev'][i] === t));
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', TABS[i] === t));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + t).classList.add('active');
+  document.getElementById('panel-'+t).classList.add('active');
 }
 
 function toggleDropdown(id) {
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('open');
-  // close all
+  const el = document.getElementById(id), open = el.classList.contains('open');
   document.querySelectorAll('.custom-select.open').forEach(d => d.classList.remove('open'));
-  if (!isOpen) el.classList.add('open');
+  if (!open) el.classList.add('open');
 }
-
-function selectOption(selectId, value, label) {
-  const el = document.getElementById(selectId);
+function selectOption(sid, value, label) {
+  const el = document.getElementById(sid);
   el.querySelector('.custom-select-trigger').textContent = label;
   el.querySelectorAll('.custom-select-option').forEach(o => o.classList.toggle('selected', o.dataset.value === value));
   el.classList.remove('open');
-  const hidden = document.getElementById(selectId.replace('-select', '-cat'));
-  hidden.value = value;
-  // trigger recalc + custom wrap toggle
-  if (selectId === 'f-tds-select') { toggleFwdCustom(); calcFwd(); }
+  document.getElementById(sid.replace('-select','-cat')).value = value;
+  if (sid === 'f-tds-select') { toggleFwdCustom(); calcFwd(); }
   else { toggleRevCustom(); calcRev(); }
 }
-
-// Close dropdowns on outside click
 document.addEventListener('click', e => {
-  if (!e.target.closest('.custom-select')) {
+  if (!e.target.closest('.custom-select'))
     document.querySelectorAll('.custom-select.open').forEach(d => d.classList.remove('open'));
-  }
 });
 
-function getTDS(catId) {
-  const v = document.getElementById(catId).value;
-  if (v === 'custom') {
-    const customId = catId === 'f-tds-cat' ? 'f-tds-custom' : 'r-tds-custom';
-    return parseFloat(document.getElementById(customId).value) || 0;
-  }
+function getTDS(id) {
+  const v = document.getElementById(id).value;
+  if (v === 'custom') return parseFloat(document.getElementById(id==='f-tds-cat'?'f-tds-custom':'r-tds-custom').value) || 0;
   return parseFloat(v);
 }
-
 function toggleFwdCustom() {
-  document.getElementById('f-custom-wrap').style.display =
-    document.getElementById('f-tds-cat').value === 'custom' ? 'block' : 'none';
+  document.getElementById('f-custom-wrap').style.display = document.getElementById('f-tds-cat').value === 'custom' ? 'block' : 'none';
 }
 function toggleRevCustom() {
-  document.getElementById('r-custom-wrap').style.display =
-    document.getElementById('r-tds-cat').value === 'custom' ? 'block' : 'none';
+  document.getElementById('r-custom-wrap').style.display = document.getElementById('r-tds-cat').value === 'custom' ? 'block' : 'none';
 }
 
+/* ── Quick ── */
+let qLastSrc = 'credits';
+
+function calcQuick() { quickFrom(qLastSrc); }
+
+function quickFrom(src) {
+  qLastSrc = src;
+  const r  = parseFloat(document.getElementById('q-rate').value) || 0;
+  const bc = document.getElementById('q-box-credits');
+  const ba = document.getElementById('q-box-amount');
+  const note = document.getElementById('q-base-note');
+
+  if (src === 'credits') {
+    const c = parseFloat(document.getElementById('q-credits').value);
+    if (!c) {
+      document.getElementById('q-amount').value = '';
+      bc.classList.remove('has-value'); ba.classList.remove('has-value');
+      note.textContent = ''; return;
+    }
+    const base = c * r, amt = base * (1 + VAT);
+    document.getElementById('q-amount').value = +amt.toFixed(2);
+    bc.classList.add('has-value'); ba.classList.add('has-value');
+    note.textContent = 'Base ' + fmt(base);
+  } else {
+    const a = parseFloat(document.getElementById('q-amount').value);
+    if (!a) {
+      document.getElementById('q-credits').value = '';
+      bc.classList.remove('has-value'); ba.classList.remove('has-value');
+      note.textContent = ''; return;
+    }
+    const base = a / (1 + VAT), cred = r > 0 ? base / r : 0;
+    document.getElementById('q-credits').value = +cred.toFixed(2);
+    bc.classList.add('has-value'); ba.classList.add('has-value');
+    note.textContent = 'Base ' + fmt(base);
+  }
+}
+
+/* ── Forward ── */
 function calcFwd() {
-  const credits = parseFloat(document.getElementById('f-credits').value) || 0;
-  const rate    = parseFloat(document.getElementById('f-rate').value) || 0;
-  const tr      = getTDS('f-tds-cat');
-
-  const base     = credits * rate;
-  const vat      = base * VAT;
-  const incl     = base + vat;
-  const tds      = base * tr / 100;
-  const net      = incl - tds;
-  const rateIncl = rate * (1 + VAT);
-
-  setAndPop('f-r-base',      fmt(base));
-  setAndPop('f-r-vat',       fmt(vat));
-  setAndPop('f-r-incl',      fmt(incl));
-  setAndPop('f-r-tds',       fmt(tds));
-  setAndPop('f-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
-  setAndPop('f-r-net',       fmt(net));
-
-  set('f-b-expr', credits.toLocaleString('en-IN') + ' × NPR\u00a0' + rate.toFixed(2));
-  set('f-b-base', fmt(base));
-  set('f-b-vat',  fmt(vat));
-  set('f-b-incl', fmt(incl));
-  set('f-b-tr',   tr);
-  set('f-b-tds',  fmt(tds));
-  set('f-b-net',  fmt(net));
+  const c = parseFloat(document.getElementById('f-credits').value) || 0;
+  const r = parseFloat(document.getElementById('f-rate').value) || 0;
+  const tr = getTDS('f-tds-cat');
+  const base = c*r, vat = base*VAT, incl = base+vat, tds = base*tr/100, net = incl-tds, ri = r*(1+VAT);
+  setP('f-r-base', fmt(base)); setP('f-r-vat', fmt(vat)); setP('f-r-incl', fmt(incl));
+  setP('f-r-tds', fmt(tds)); setP('f-r-rate-incl', 'NPR\u00a0'+ri.toFixed(4)); setP('f-r-net', fmt(net));
+  set('f-b-expr', c.toLocaleString('en-IN')+'\u00a0×\u00a0NPR\u00a0'+r.toFixed(2));
+  set('f-b-base', fmt(base)); set('f-b-vat', fmt(vat)); set('f-b-incl', fmt(incl));
+  set('f-b-tr', tr); set('f-b-tds', fmt(tds)); set('f-b-net', fmt(net));
 }
 
+/* ── Reverse ── */
 function calcRev() {
   const paid = parseFloat(document.getElementById('r-paid').value) || 0;
-  const rate = parseFloat(document.getElementById('r-rate').value) || 0;
+  const r    = parseFloat(document.getElementById('r-rate').value) || 0;
   const tr   = getTDS('r-tds-cat');
-
-  // paid = base * 1.13 - base * (tr/100)
-  // paid = base * (1.13 - tr/100)
-  // base = paid / (1.13 - tr/100)
-  const divisor  = (1 + VAT) - (tr / 100);
-  const base     = divisor > 0 ? paid / divisor : 0;
-  const vat      = base * VAT;
-  const incl     = base + vat;
-  const tds      = base * tr / 100;
-  const confirm  = incl - tds;
-  const credits  = rate > 0 ? base / rate : 0;
-  const rateIncl = rate * (1 + VAT);
-
-  setAndPop('r-r-base',      fmt(base));
-  setAndPop('r-r-vat',       fmt(vat));
-  setAndPop('r-r-incl',      fmt(incl));
-  setAndPop('r-r-tds',       fmt(tds));
-  setAndPop('r-r-rate-incl', 'NPR\u00a0' + rateIncl.toFixed(4));
-  setAndPop('r-r-credits',   fmtC(credits));
-
-  set('r-b-paid',    fmt(paid));
-  set('r-b-base',    fmt(base));
-  set('r-b-vat',     fmt(vat));
-  set('r-b-incl',    fmt(incl));
-  set('r-b-tr',      tr);
-  set('r-b-tds',     fmt(tds));
-  set('r-b-confirm', fmt(confirm));
-  set('r-b-rate',    'NPR\u00a0' + rate.toFixed(2));
-  set('r-b-credits', fmtC(credits));
+  const div  = (1+VAT)-(tr/100), base = div>0?paid/div:0;
+  const vat  = base*VAT, incl = base+vat, tds = base*tr/100, conf = incl-tds;
+  const cred = r>0?base/r:0, ri = r*(1+VAT);
+  setP('r-r-base', fmt(base)); setP('r-r-vat', fmt(vat)); setP('r-r-incl', fmt(incl));
+  setP('r-r-tds', fmt(tds)); setP('r-r-rate-incl', 'NPR\u00a0'+ri.toFixed(4)); setP('r-r-credits', fmtC(cred));
+  set('r-b-paid', fmt(paid)); set('r-b-base', fmt(base)); set('r-b-vat', fmt(vat));
+  set('r-b-incl', fmt(incl)); set('r-b-tr', tr); set('r-b-tds', fmt(tds));
+  set('r-b-confirm', fmt(conf)); set('r-b-rate', 'NPR\u00a0'+r.toFixed(2)); set('r-b-credits', fmtC(cred));
 }
 </script>
 </body>
