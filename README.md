@@ -1,25 +1,40 @@
 # SMS · VAT · TDS Calculator
 
-A single-file offline calculator for Nepal SMS credit billing — handles VAT (13%) and TDS deductions cleanly.
+A lightweight, single-file calculator for SMS billing — handles VAT (13%) and TDS deductions with a clean, mobile-friendly UI. Built for internal use, deployable as a static page with zero dependencies.
 
-## What it does
+## Live on
 
-**Credits → Amount** — Enter credits and rate (excl. VAT) to get the exact amount a client needs to pay after TDS deduction.
+> `https://qwertyonheist.github.io/TDS/`
 
-**Amount → Credits** — Enter what a client actually paid (after TDS) to back-calculate how many SMS credits they should receive.
+## Features
 
-## Tax logic
+- **Quick Convert** — type credits to see the NPR amount, or type an amount to see credits. Both fields update each other live.
+- **Credits → Amount** — enter credits and rate to calculate exactly what a client needs to pay after TDS.
+- **Amount → Credits** — enter what a client actually paid (post-TDS) to back-calculate how many SMS credits they receive.
+- TDS categories: Goods (1.5%), Services (5%), Rent (10%), Commission (15%), Dividend (25%), or a custom rate.
+- VAT fixed at 13% on base amount throughout.
+- Full breakdown table on each calculation tab.
+- Dark mode via system preference.
+- Mobile-friendly with safe area insets for notched devices.
 
-- VAT is fixed at **13%** applied on the base rate
-- TDS is deducted from the **base amount** (excl. VAT)
-- Net payable = (base + VAT) − TDS
+## Tax Logic
 
-TDS categories: Goods (1.5%), Services (5%), Rent (10%), Commission (15%), Dividend (25%), or custom.
+| Component | Formula |
+|---|---|
+| Base amount | `credits × rate` |
+| VAT | `base × 13%` |
+| Total incl. VAT | `base + VAT` |
+| TDS | `base × TDS%` |
+| Client pays | `total incl. VAT − TDS` |
 
-## Usage
+For reverse (Amount → Credits): `base = paid ÷ (1.13 − TDS%)`
 
-Just open `index.html` in any browser. No install, no dependencies, works offline.
+## Built With
 
-## Built with
+- Vanilla HTML, CSS, JavaScript — no frameworks
+- [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) — UI font
+- [Noto Sans Mono](https://fonts.google.com/specimen/Noto+Sans+Mono) — number display font
 
-HTML · CSS · Vanilla JS · Material Design 3 · Cambria
+## License
+
+MIT — use it freely.
