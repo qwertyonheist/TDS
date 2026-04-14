@@ -824,7 +824,7 @@ function copySummary(tab) {
     const c  = document.getElementById('f-credits').value || '—';
     const tr = getTDS('f-tds-cat');
     lines = [
-      'SMS · VAT · TDS — Credits → Amount',
+      'Summary',
       '─────────────────────────────────',
       `Credits:         ${c}`,
       `Rate (excl. VAT): NPR ${sharedRate||'—'}`,
@@ -834,13 +834,13 @@ function copySummary(tab) {
       `VAT (13%):       ${document.getElementById('f-b-vat').textContent}`,
       `Total incl. VAT: ${document.getElementById('f-b-incl').textContent}`,
       `TDS deducted:    ${document.getElementById('f-b-tds').textContent}`,
-      `Client pays:     ${document.getElementById('f-b-net').textContent}`,
+      `Total payable:     ${document.getElementById('f-b-net').textContent}`,
     ];
   } else {
     const paid = document.getElementById('r-paid').value || '—';
     const tr   = getTDS('r-tds-cat');
     lines = [
-      'SMS · VAT · TDS — Amount → Credits',
+      'Summary',
       '─────────────────────────────────',
       `Amount paid:     NPR ${paid}`,
       `Rate (excl. VAT): NPR ${sharedRate||'—'}`,
