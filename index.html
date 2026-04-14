@@ -189,7 +189,9 @@ input:focus {
   outline:none; border-color:var(--primary); border-width:2px;
   box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 14%,transparent);
 }
-input[type=number]::-webkit-inner-spin-button { opacity:.3; }
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { appearance:none; -webkit-appearance:none; margin:0; }
+input[type=number] { -moz-appearance:textfield; }
 /* iOS zoom prevention: keep visual size 14px but set actual to 16px */
 @media(max-width:480px){
   input[type=number] { font-size:16px; }
